@@ -19,9 +19,9 @@ Order to repeat the analysis
     2.5 joinSubsamples.R  
    3. SGCCA functional enrichment  
     3.1 selectedFeatures.R  
-    3.2 functions_overrepre.R
-    3.3 functions_overrepre_plots.R
-    3.4 functions_overrepre_groups.R
+    3.2 functions_overrepre.R  
+    3.3 functions_overrepre_plots.R  
+    3.4 functions_overrepre_groups.R  
     3.5 functionsJaccard.R  
    4. MI networks for the enriched functions  
     4.1 get_matrix.R  
