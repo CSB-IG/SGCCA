@@ -1,0 +1,100 @@
+---
+title: "Data pre-procesing"
+output:
+  html_document:
+    df_print: paged
+---
+
+## 1. Get the barcode of the samples whit co-occuring measurements
+
+[getData.R](https://github.com/CSB-IG/SGCCA/blob/main/getData.R) → subtype.tsv
+
+DB has been updated since the download, i.e.:
+
+-   workflow.type changed from HTSeq - Counts to STAR - Counts
+
+-   3 extra luminal A samples
+
+```{r}
+suppressPackageStartupMessages({
+library(SummarizedExperiment)#1.22.0
+library(TCGAbiolinks)#2.20.1
+#library(VennDiagram)#1.6.20
+})
+##########SAMPLE IDs PER DATA TYPE#####################
+mthyltn <-  GDCquery(project = "TCGA-BRCA",
+	data.category = "DNA Methylation",
+	platform="Illumina Human Methylation 450")
+mthyltn=getResults(mthyltn)
+head(mthyltn,3)
+```
+
+```{r}
+i=substr(mthyltn$cases,1,19)
+xprssn <- GDCquery(project = "TCGA-BRCA",
+  data.category = "Transcriptome Profiling",
+  data.type = "Gene Expression Quantification",
+  workflow.type="STAR - Counts")#11/2022 option
+#  workflow.type = "HTSeq - Counts")
+xprssn=getResults(xprssn)
+j=substr(xprssn$cases,1,19)
+mirnas <- GDCquery(project = "TCGA-BRCA",
+	data.category = "Transcriptome Profiling",
+	data.type = "miRNA Expression Quantification")
+mirnas=getResults(mirnas)
+k=substr(mirnas$cases,1,19)
+
+##############CONCOURRENT MEASURES########################
+samples=intersect(intersect(i,j),k)
+samples=data.frame(cbind(sample=samples,patient=substr(samples,1,12)))
+head(samples)
+```
+
+would have been easier with tidy
+
+```{r}
+suppressPackageStartupMessages({library(tidyverse)})
+subtypes=TCGAquery_subtype(tumor="brca")#subtype per patient
+samples=merge(samples,subtypes,by="patient",all.x=T)
+samples%>%distinct(patient,BRCA_Subtype_PAM50)%>%count(BRCA_Subtype_PAM50)
+```
+
+```{r}
+colnames(mthyltn)[30]="patient"
+temp=mthyltn%>%select(cases,data_type,sample_type,patient)
+temp$sample=substr(temp$cases,1,19)
+samples=merge(samples,temp,by="sample",all.x=T)
+samples%>%distinct(patient.x,BRCA_Subtype_PAM50,sample_type)%>%count(sample_type)
+```
+
+## 2. RNAseq pre-processing
+
+[prepro-mRNA.R](https://github.com/CSB-IG/SGCCA/blob/main/prepro-mRNA.R) → RNAseqnormalized.tsv
+
+## 3. miRNAseq pre-processing
+
+[prepro-miRNA.R](https://github.com/CSB-IG/SGCCA/blob/main/prepro-miRNA.R) → miRNAseqNormi.tsv
+
+```{r}
+suppressPackageStartupMessages({library(data.table)})
+exampl=fread("miRNAseqNormi.tsv")
+dim(exampl)
+exampl[1:5,1:5]
+```
+
+## 4. HM450 pre-processing
+
+[prepro-methy.R](https://github.com/CSB-IG/SGCCA/blob/main/prepro-methy.R) → methyNormi.tsv
+
+## 5. Paste together the 3 matrixes of every subtype
+
+Rscript [concatena.R](https://github.com/CSB-IG/SGCCA/blob/main/concatena.R) → Basal.mtrx, Her2.mtrx, ...
+
+## 6. Eigenvalue normalization
+
+Rscript [mfa_normi.R](https://github.com/CSB-IG/SGCCA/blob/main/mfa_normi.R) → Basal.eigeNormi, Her2.eigeNormi...
+
+```{r}
+exampl=fread("Her2.eigeNormi")
+exampl[1:5,1:5]
+```
