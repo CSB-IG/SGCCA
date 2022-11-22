@@ -1,8 +1,8 @@
 temp=read.table("penalty_search.tsv",sep='\t',header=T)
 
 #######################################DIAGNOSTIC PLOTS
-library(ggplot2)
-library(gridExtra)
+library(ggplot2)#3.3.5
+library(gridExtra)#2.3
 
 temp$omic=factor(temp$omic,levels=c("CpGs","transcripts","miRNAs"))
 temp=temp[order(temp$penalty),]
@@ -25,7 +25,7 @@ omics=lapply(omics,function(x) temp[temp$omic==x,])
 omics=lapply(omics,function(x) as.data.frame(apply(x,2,as.numeric)))
 names(omics)=levels(temp$omic)
 omics=lapply(omics,function(y) sapply(unique(y$penalty),function(x) 
-apply(y[y$penalty==x,],2,median)))#better than mean?
+apply(y[y$penalty==x,],2,median,na.rm=T)))#better than mean?
 omics=lapply(omics,function(x) as.data.frame(t(x)))
 #indi plots or CpGs will determine axis
 plots=lapply(1:3,function(x) ggplot(omics[[x]],
