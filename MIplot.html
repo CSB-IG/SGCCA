@@ -1694,7 +1694,7 @@ cd ../../</code></pre>
 ## join ADJ matriz time: 0 minutes.
 ## Moving adjancy matrix
 ## Creating SIF: 0 minutes.
-## Sorting: 0 minutes.
+## Sorting: .01666666666666666666 minutes.
 ## cg14805347   cg13198321  0.658929
 ## cg13198321   cg14805347  0.658929
 ## cg23953697   cg02105519  0.63503
@@ -1715,8 +1715,8 @@ for the edge type</h2>
 <p>Rscript <a href="https://github.com/CSB-IG/SGCCA/blob/main/MIfilter.R">MIfilter.R</a>
 <a href="GO:0007156.Basal.sort" class="uri">GO:0007156.Basal.sort</a> →
 <a href="GO:0007156.Basal.filtered.alt" class="uri">GO:0007156.Basal.filtered.alt</a></p>
-<p>If ARACNE MI distributions are not significantly different MIfilter.R
-outuputs file.filtered &amp; file.filtered.alt.</p>
+<p>If ARACNE MI distributions are not significantly different,
+MIfilter.R outputs file.filtered &amp; file.filtered.alt.</p>
 <p>file.filtered.alt uses a single threshold no matter the edge type</p>
 <pre class="r"><code>edges=read_tsv(&quot;GO:0007156.Basal.filtered.alt&quot;,show_col_types=F)
 head(edges)</code></pre>
@@ -1734,8 +1734,8 @@ expression/methylation &amp; the file mapping CpG probes to genes</p>
 <p>Rscript <a href="https://github.com/CSB-IG/SGCCA/blob/main/plotGraph.R">plotGraph.R</a>
 <a href="GO:0007156.Basal.filtered.alt" class="uri">GO:0007156.Basal.filtered.alt</a> → <a href="GO:0007156.Basal.cys" class="uri">GO:0007156.Basal.cys</a></p>
 </div>
-<div id="get-info-about-the-nodes-and-edges-ploted" class="section level2">
-<h2>5. Get info about the nodes and edges ploted</h2>
+<div id="get-info-about-the-nodes-and-edges-plotted" class="section level2">
+<h2>5. Get info about the nodes and edges plotted</h2>
 <p>Cytoscape has to be already open</p>
 <p>Rscript <a href="https://github.com/CSB-IG/SGCCA/blob/main/annotateGraph.R">annotateGraph.R</a>
 <a href="GO:0007156.Basal.cys" class="uri">GO:0007156.Basal.cys</a></p>
@@ -1772,8 +1772,9 @@ funs</code></pre>
 
 library(biomaRt)
 mart=useEnsembl(&quot;ensembl&quot;,dataset=&quot;hsapiens_gene_ensembl&quot;,
-    version=105)
-#https://dec2021.archive.ensembl.org
+    version=105)</code></pre>
+<pre><code>## Ensembl site unresponsive, trying useast mirror</code></pre>
+<pre class="r"><code>#https://dec2021.archive.ensembl.org
 myannot=getBM(attributes = c(&quot;hgnc_symbol&quot;,&quot;wikigene_description&quot;),
     filter=&quot;hgnc_symbol&quot;,values=names$label,mart=mart)
 head(myannot)</code></pre>
@@ -1782,8 +1783,8 @@ head(myannot)</code></pre>
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["hgnc_symbol"],"name":[1],"type":["chr"],"align":["left"]},{"label":["wikigene_description"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"ALDH1A2","2":"aldehyde dehydrogenase 1 family member A2","_rn_":"1"},{"1":"ASB18","2":"ankyrin repeat and SOCS box containing 18","_rn_":"2"},{"1":"DIAPH2","2":"diaphanous related formin 2","_rn_":"3"},{"1":"FAT1","2":"FAT atypical cadherin 1","_rn_":"4"},{"1":"FKBP11","2":"FKBP prolyl isomerase 11","_rn_":"5"},{"1":"FOXB1","2":"forkhead box B1","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<pre class="r"><code>enriched=list(BP=read_tsv(&quot;subsamples/BP.enrichment&quot;,show_col_types=F),
-    KEGG=read_tsv(&quot;subsamples/KEGG.enrichment&quot;,show_col_types=F))
+<pre class="r"><code>enriched=list(BP=read_tsv(&quot;BP.enrichment&quot;,show_col_types=F),
+    KEGG=read_tsv(&quot;KEGG.enrichment&quot;,show_col_types=F))
 known_genes=lapply(enriched,function(x) 
     x%&gt;%filter(Description%in%funs&amp;subtype==subty)%&gt;%
     dplyr::select(Description,geneID)%&gt;%separate_rows(geneID,sep=&#39;/&#39;))
@@ -1806,7 +1807,7 @@ knownfun=lapply(funs,function(x) #for every function in the net
 as.data.frame(do.call(rbind,lapply(knownfun,function(x) do.call(rbind,lapply(x,function(y) cbind(paste(y$ids,collapse=&#39;,&#39;),y$QueryTranslation))))))[1:2,]</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["V1"],"name":[1],"type":["chr"],"align":["left"]},{"label":["V2"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"","2":"homophilic cell adhesion via plasma membrane adhesion molecules[All Fields] AND cg27428208[All Fields]","_rn_":"1"},{"1":"","2":"(homophilic[All Fields] AND (\"cell adhesion\"[MeSH Terms] OR (\"cell\"[All Fields] AND \"adhesion\"[All Fields]) OR \"cell adhesion\"[All Fields]) AND via[All Fields] AND (\"cell membrane\"[MeSH Terms] OR (\"cell\"[All Fields] AND \"membrane\"[All Fields]) OR \"cell membrane\"[All Fields] OR (\"plasma\"[All Fields] AND \"membrane\"[All Fields]) OR \"plasma membrane\"[All Fields]) AND (\"J Adhes\"[Journal] OR \"adhesion\"[All Fields]) AND (\"Molecules\"[Journal] OR \"molecules\"[All Fields])) AND MT-CO3[All Fields]","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["V1"],"name":[1],"type":["chr"],"align":["left"]},{"label":["V2"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"","2":"homophilic cell adhesion via plasma membrane adhesion molecules AND cg27428208","_rn_":"1"},{"1":"","2":"(\"homophilic\"[All Fields] OR \"homophilically\"[All Fields]) AND (\"cell adhesion\"[MeSH Terms] OR (\"cell\"[All Fields] AND \"adhesion\"[All Fields]) OR \"cell adhesion\"[All Fields]) AND \"via\"[All Fields] AND (\"cell membrane\"[MeSH Terms] OR (\"cell\"[All Fields] AND \"membrane\"[All Fields]) OR \"cell membrane\"[All Fields] OR (\"plasma\"[All Fields] AND \"membrane\"[All Fields]) OR \"plasma membrane\"[All Fields]) AND (\"adhese\"[All Fields] OR \"adhesion\"[All Fields] OR \"adhesions\"[All Fields] OR \"adhesive s\"[All Fields] OR \"adhesively\"[All Fields] OR \"adhesiveness\"[MeSH Terms] OR \"adhesiveness\"[All Fields] OR \"adhesivenesses\"[All Fields] OR \"adhesives\"[Pharmacological Action] OR \"adhesives\"[MeSH Terms] OR \"adhesives\"[All Fields] OR \"adhesive\"[All Fields] OR \"adhesivities\"[All Fields] OR \"adhesivity\"[All Fields]) AND (\"molecule\"[All Fields] OR \"molecule s\"[All Fields] OR \"molecules\"[All Fields]) AND \"MT-CO3\"[All Fields]","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code>#Checking edges on pubmed
@@ -1824,11 +1825,11 @@ known=apply(edges,1,function(x)
 head(known,2)</code></pre>
 <pre><code>## [[1]]
 ## Entrez search result with 0 hits (object contains 0 IDs and no web_history object)
-##  Search term (as translated):  RPS6[All Fields] AND cg00001747[All Fields] 
+##  Search term (as translated):  RPS6 AND cg00001747 
 ## 
 ## [[2]]
 ## Entrez search result with 0 hits (object contains 0 IDs and no web_history object)
-##  Search term (as translated):  PHGDH[All Fields] AND cg00123762[All Fields]</code></pre>
+##  Search term (as translated):  PHGDH AND cg00123762</code></pre>
 </div>
 
 
