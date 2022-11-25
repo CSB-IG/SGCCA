@@ -72,7 +72,7 @@ head(resus)
 #cat *.tsv>penalty_search.tsv
 ```
 
-## 2. Choose the penalization values with highest AVE and lowest nfeatures
+## 2. Chosing the penalization values with highest AVE and lowest nfeatures
 
 [choose_penalty.R](https://github.com/CSB-IG/SGCCA/blob/main/choose_penalty.R) → Figure S1
 
@@ -103,7 +103,7 @@ plots=lapply(1:3,function(x) ggplot(omics[[x]],
 #dev.off()
 ```
 
-## 3. Run an SGCCA per subtype, using the adjuted penalization values
+## 3. Run an SGCCA per subtype, using the adjusted penalization values
 
 Rscript [sgcca.R](https://github.com/CSB-IG/SGCCA/blob/main/sgcca.R) Her2 → Her2.selected
 
@@ -132,13 +132,13 @@ head(selected)
 #	quote=F,row.names=F)
 ```
 
-## 4. Run with 100 subsets of the data to check the stability
+## 4. SGCCA with 100 subsets of the data to check the stability
 
 Rscript [sgccaSubsample.R](https://github.com/CSB-IG/SGCCA/blob/main/sgccaSubsample.R) Her2 1→ Her2.1.selected
 
 The same than sgcca.R but with a random subset of half the data
 
-## 5. Count the features selected for the subsets to check the stability
+## 5. Count the features selected on the subsets to check the stability
 
 Rscript [joinSubsamples.R](https://github.com/CSB-IG/SGCCA/blob/main/joinSubsamples.R) Her2 → Her2.subsampled
 
