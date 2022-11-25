@@ -72,7 +72,7 @@ If something fails probably is due to an incorrect parsing of the parameters to 
 
 Rscript [MIfilter.R](https://github.com/CSB-IG/SGCCA/blob/main/MIfilter.R) <GO:0007156.Basal.sort> → <GO:0007156.Basal.filtered.alt>
 
-If ARACNE MI distributions are not significantly different MIfilter.R outuputs file.filtered & file.filtered.alt.
+If ARACNE MI distributions are not significantly different, MIfilter.R outputs file.filtered & file.filtered.alt.
 
 file.filtered.alt uses a single threshold no matter the edge type
 
@@ -89,7 +89,7 @@ Also Cytoscape has to be already open
 
 Rscript [plotGraph.R](https://github.com/CSB-IG/SGCCA/blob/main/plotGraph.R) <GO:0007156.Basal.filtered.alt> → <GO:0007156.Basal.cys>
 
-## 5. Get info about the nodes and edges ploted
+## 5. Get info about the nodes and edges plotted
 
 Cytoscape has to be already open
 
@@ -136,8 +136,8 @@ head(myannot)
 ```
 
 ```{r}
-enriched=list(BP=read_tsv("subsamples/BP.enrichment",show_col_types=F),
-	KEGG=read_tsv("subsamples/KEGG.enrichment",show_col_types=F))
+enriched=list(BP=read_tsv("BP.enrichment",show_col_types=F),
+	KEGG=read_tsv("KEGG.enrichment",show_col_types=F))
 known_genes=lapply(enriched,function(x) 
 	x%>%filter(Description%in%funs&subtype==subty)%>%
 	dplyr::select(Description,geneID)%>%separate_rows(geneID,sep='/'))
