@@ -5,7 +5,7 @@ output:
     df_print: paged
 ---
 
-## 1. Get the barcode of the samples whit co-occuring measurements
+## 1. Get the barcode of the samples **with co-occurring**  measurements
 
 [getData.R](https://github.com/CSB-IG/SGCCA/blob/main/getData.R) → subtype.tsv
 
